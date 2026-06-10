@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caso Ericlei Alves de Sá — Dossiê</title>
+<style>
+:root {
+  --azul: #1a3a5c;
+  --azul2: #2563eb;
+  --azul3: #dbeafe;
+  --vermelho: #b91c1c;
+  --verm2: #fee2e2;
+  --verde: #15803d;
+  --verd2: #dcfce7;
+  --cinza: #374151;
+  --cinza2: #f3f4f6;
+  --laranja: #c2410c;
+  --lar2: #ffedd5;
+  --branco: #ffffff;
+  --sombra: 0 4px 24px rgba(0,0,0,0.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0f172a;color:#1e293b;min-height:100vh}
+
+/* ── TELA DE SENHA ── */
+#lock-screen{position:fixed;inset:0;background:#0f172a;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:24px}
+.lock-card{background:#1e293b;border:1px solid #334155;border-radius:20px;padding:48px 40px;max-width:400px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.lock-icon{font-size:48px;margin-bottom:16px}
+.lock-title{color:#f1f5f9;font-size:22px;font-weight:700;margin-bottom:6px}
+.lock-sub{color:#94a3b8;font-size:14px;margin-bottom:28px}
+.lock-input{width:100%;padding:14px 18px;background:#0f172a;border:2px solid #334155;border-radius:10px;color:#f1f5f9;font-size:16px;outline:none;text-align:center;letter-spacing:3px;transition:.2s}
+.lock-input:focus{border-color:#2563eb}
+.lock-btn{width:100%;margin-top:14px;padding:14px;background:#2563eb;color:white;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;transition:.2s}
+.lock-btn:hover{background:#1d4ed8}
+.lock-error{color:#f87171;font-size:13px;margin-top:8px;display:none}
+.lock-hint{color:#475569;font-size:12px;margin-top:16px}
+
+/* ── MAIN ── */
+#main{display:none;background:#f8fafc;min-height:100vh}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 60%,#1e293b 100%);padding:60px 24px 80px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h60v60H0z' fill='none'/%3E%3Cpath d='M30 30m-1 0a1 1 0 1 0 2 0a1 1 0 1 0-2 0' fill='rgba(255,255,255,0.03)'/%3E%3C/svg%3E");opacity:.5}
+.hero-inner{max-width:900px;margin:0 auto;position:relative}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);color:#fca5a5;padding:6px 14px;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:20px}
+.hero h1{color:#f1f5f9;font-size:clamp(28px,5vw,48px);font-weight:800;line-height:1.15;margin-bottom:16px}
+.hero h1 span{color:#60a5fa}
+.hero-desc{color:#94a3b8;font-size:16px;line-height:1.7;max-width:700px;margin-bottom:32px}
+.hero-stats{display:flex;flex-wrap:wrap;gap:16px}
+.stat{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 20px;min-width:140px}
+.stat-n{color:#60a5fa;font-size:28px;font-weight:800}
+.stat-l{color:#94a3b8;font-size:12px;margin-top:2px}
+
+/* ── NAV ── */
+nav{background:#1e293b;border-bottom:1px solid #334155;position:sticky;top:0;z-index:100}
+.nav-inner{max-width:1100px;margin:0 auto;padding:0 20px;display:flex;gap:2px;overflow-x:auto}
+.nav-btn{color:#94a3b8;font-size:13px;font-weight:500;padding:14px 16px;background:none;border:none;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:.2s}
+.nav-btn:hover,.nav-btn.active{color:#60a5fa;border-bottom-color:#2563eb}
+
+/* ── CONTAINER ── */
+.container{max-width:1100px;margin:0 auto;padding:40px 20px}
+.section{display:none}
+.section.active{display:block}
+
+/* ── CARDS ── */
+.card{background:white;border-radius:16px;box-shadow:var(--sombra);margin-bottom:24px;overflow:hidden}
+.card-header{padding:20px 24px 16px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:12px}
+.card-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.card-title{font-size:17px;font-weight:700;color:var(--azul)}
+.card-body{padding:20px 24px}
+
+/* ── ALERTAS ── */
+.alert{border-radius:12px;padding:16px 20px;margin-bottom:16px;display:flex;gap:12px;align-items:flex-start}
+.alert-icon{font-size:20px;flex-shrink:0;margin-top:2px}
+.alert.danger{background:var(--verm2);border-left:4px solid var(--vermelho)}
+.alert.warning{background:var(--lar2);border-left:4px solid var(--laranja)}
+.alert.success{background:var(--verd2);border-left:4px solid var(--verde)}
+.alert.info{background:var(--azul3);border-left:4px solid var(--azul2)}
+.alert-text{font-size:14px;line-height:1.6;color:var(--cinza)}
+.alert-title{font-weight:700;margin-bottom:4px}
+
+/* ── TIMELINE ── */
+.timeline{position:relative;padding-left:32px}
+.timeline::before{content:'';position:absolute;left:14px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,#2563eb,#7c3aed,#dc2626)}
+.tl-item{position:relative;margin-bottom:28px}
+.tl-dot{position:absolute;left:-26px;top:4px;width:16px;height:16px;border-radius:50%;border:3px solid white;box-shadow:0 0 0 2px currentColor;flex-shrink:0}
+.tl-dot.blue{color:#2563eb;background:#2563eb}
+.tl-dot.red{color:#dc2626;background:#dc2626}
+.tl-dot.orange{color:#ea580c;background:#ea580c}
+.tl-dot.green{color:#16a34a;background:#16a34a}
+.tl-dot.purple{color:#7c3aed;background:#7c3aed}
+.tl-date{font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.tl-title{font-size:15px;font-weight:700;color:#111827;margin-bottom:6px}
+.tl-desc{font-size:13.5px;color:#4b5563;line-height:1.6}
+.tl-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{display:inline-block;padding:2px 10px;border-radius:999px;font-size:11px;font-weight:600}
+.tag.crime{background:#fee2e2;color:#b91c1c}
+.tag.prova{background:#dcfce7;color:#15803d}
+.tag.posse{background:#dbeafe;color:#1d4ed8}
+.tag.warn{background:#ffedd5;color:#c2410c}
+
+/* ── PROVAS GRID ── */
+.provas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.prova-card{background:white;border:1px solid #e5e7eb;border-radius:14px;padding:18px;transition:.2s}
+.prova-card:hover{box-shadow:0 8px 24px rgba(0,0,0,0.12);transform:translateY(-2px)}
+.prova-ref{font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.prova-title{font-size:14px;font-weight:700;color:#111827;margin-bottom:6px}
+.prova-desc{font-size:12.5px;color:#6b7280;line-height:1.5;margin-bottom:10px}
+.prova-meta{display:flex;justify-content:space-between;align-items:center}
+.prova-date{font-size:11px;color:#9ca3af}
+.forca{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;background:#dcfce7;color:#15803d}
+
+/* ── CHAT ── */
+.chat-container{background:#e5ddd5;border-radius:14px;overflow:hidden}
+.chat-header{background:#1f2c34;color:white;padding:14px 18px;display:flex;align-items:center;gap:12px}
+.chat-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#25d366,#128c7e);display:flex;align-items:center;justify-content:center;font-weight:700;color:white}
+.chat-name{font-weight:600;font-size:15px}
+.chat-sub{font-size:12px;color:#8696a0}
+.chat-msgs{padding:16px;display:flex;flex-direction:column;gap:8px;max-height:600px;overflow-y:auto}
+.msg{max-width:80%;padding:10px 14px;border-radius:12px;font-size:13.5px;line-height:1.5;position:relative}
+.msg.them{background:white;border-top-left-radius:2px;align-self:flex-start;color:#111827}
+.msg.me{background:#dcf8c6;border-top-right-radius:2px;align-self:flex-end;color:#111827}
+.msg-time{font-size:11px;color:#999;margin-top:4px;text-align:right}
+.msg-sender{font-size:11px;font-weight:700;color:#128c7e;margin-bottom:4px}
+.day-label{text-align:center;margin:12px 0}
+.day-label span{background:rgba(255,255,255,0.8);color:#54656f;font-size:12px;padding:4px 14px;border-radius:999px;font-weight:500}
+.chat-section-title{font-size:13px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin:20px 0 10px;padding-bottom:6px;border-bottom:1px solid #e5e7eb}
+.quote{background:#fff8e1;border-left:4px solid #f59e0b;padding:12px 16px;border-radius:0 10px 10px 0;margin:8px 0;font-size:13px;font-style:italic;color:#374151;line-height:1.6}
+.quote strong{color:#92400e;font-style:normal}
+
+/* ── CRIMES ── */
+.crime-list{display:flex;flex-direction:column;gap:16px}
+.crime-item{border-left:4px solid var(--vermelho);background:white;border-radius:0 12px 12px 0;padding:18px 20px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.crime-art{font-size:12px;font-weight:700;color:var(--vermelho);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.crime-name{font-size:16px;font-weight:700;color:#111827;margin-bottom:8px}
+.crime-desc{font-size:13.5px;color:#4b5563;line-height:1.6}
+.crime-prova{font-size:12px;color:#6b7280;margin-top:8px;font-style:italic}
+
+/* ── PARTES ── */
+.partes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.parte-card{background:white;border-radius:14px;padding:20px;border-top:4px solid var(--azul2);box-shadow:0 2px 12px rgba(0,0,0,0.06)}
+.parte-card.adversario{border-top-color:var(--vermelho)}
+.parte-card.neutro{border-top-color:#f59e0b}
+.parte-avatar{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:12px}
+.parte-nome{font-size:16px;font-weight:700;color:#111827;margin-bottom:4px}
+.parte-role{font-size:12px;font-weight:600;margin-bottom:10px;padding:2px 10px;border-radius:999px;display:inline-block}
+.parte-role.req{background:#dbeafe;color:#1e40af}
+.parte-role.adv{background:#fee2e2;color:#991b1b}
+.parte-role.ned{background:#fef9c3;color:#854d0e}
+.parte-info{font-size:12.5px;color:#6b7280;line-height:1.7}
+
+/* ── TABELA RESUMO ── */
+table{width:100%;border-collapse:collapse}
+th{background:#1e293b;color:white;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:12px 14px;text-align:left}
+td{padding:11px 14px;font-size:13px;color:#374151;border-bottom:1px solid #f1f5f9}
+tr:nth-child(even) td{background:#f8fafc}
+tr:hover td{background:#f0f4ff}
+
+/* ── FOOTER ── */
+.footer{background:#1e293b;color:#64748b;text-align:center;padding:24px;font-size:12px;margin-top:40px}
+
+/* ── UTILS ── */
+.badge-red{background:#fee2e2;color:#b91c1c;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700}
+.badge-green{background:#dcfce7;color:#15803d;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700}
+.badge-blue{background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700}
+.badge-orange{background:#ffedd5;color:#c2410c;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+.text-sm{font-size:13px;color:#6b7280;line-height:1.7}
+hr{border:none;border-top:1px solid #e5e7eb;margin:20px 0}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     TELA DE SENHA
+══════════════════════════════════════════════ -->
+<div id="lock-screen">
+  <div class="lock-card">
+    <div class="lock-icon">🔒</div>
+    <div class="lock-title">Acesso Restrito</div>
+    <div class="lock-sub">Dossiê Jurídico — Caso Ericlei Alves de Sá<br>Informe a senha para continuar</div>
+    <input class="lock-input" type="password" id="senha-input" placeholder="••••••••" maxlength="20">
+    <div class="lock-error" id="lock-error">Senha incorreta. Tente novamente.</div>
+    <button class="lock-btn" onclick="verificarSenha()">Acessar</button>
+    <div class="lock-hint">Acesso autorizado apenas para uso jurídico</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     CONTEÚDO PRINCIPAL
+══════════════════════════════════════════════ -->
+<div id="main">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">⚠ Caso Documentado — Em Andamento Judicial</div>
+    <h1>Caso <span>Ericlei Alves de Sá</span><br>vs. Cabo PM Edson Selinger</h1>
+    <p class="hero-desc">Dossiê completo sobre coação, ameaças, incêndio criminoso suspeito e abuso de autoridade por militar da Polícia Militar de Santa Catarina envolvendo a disputa pelo Lote 04, Quadra 30, Balneário Atlântida, Balneário Barra do Sul/SC.</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-n">14+</div><div class="stat-l">Documentos de prova</div></div>
+      <div class="stat"><div class="stat-n">830</div><div class="stat-l">Mensagens registradas</div></div>
+      <div class="stat"><div class="stat-n">9</div><div class="stat-l">Crimes identificados</div></div>
+      <div class="stat"><div class="stat-n">13/04</div><div class="stat-l">Premeditação desde abril/26</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <button class="nav-btn active" onclick="showSection('resumo',this)">📋 Resumo</button>
+    <button class="nav-btn" onclick="showSection('timeline',this)">📅 Linha do Tempo</button>
+    <button class="nav-btn" onclick="showSection('provas',this)">📁 Provas</button>
+    <button class="nav-btn" onclick="showSection('chat',this)">💬 Conversa WhatsApp</button>
+    <button class="nav-btn" onclick="showSection('crimes',this)">⚖️ Crimes</button>
+    <button class="nav-btn" onclick="showSection('partes',this)">👤 Partes</button>
+    <button class="nav-btn" onclick="showSection('juridico',this)">📜 Seção Jurídica</button>
+  </div>
+</nav>
+
+<div class="container">
+
+<!-- ══════ RESUMO ══════ -->
+<div id="s-resumo" class="section active">
+
+  <div class="alert danger">
+    <div class="alert-icon">🚨</div>
+    <div class="alert-text">
+      <div class="alert-title">SITUAÇÃO ATIVA — AÇÃO URGENTE NECESSÁRIA</div>
+      Viatura PM com giroflex foi encontrada no imóvel em 09/06/2026. O esbulho possessório está em curso. Pedido de liminar deve ser protocolado imediatamente.
+    </div>
+  </div>
+
+  <div class="alert warning">
+    <div class="alert-icon">⚠️</div>
+    <div class="alert-text">
+      <div class="alert-title">PROVA DE PREMEDITAÇÃO — RECIBO 61.296</div>
+      Em 13/04/2026 — um mês antes de contatar Ericlei — Edson Selinger pagou R$35,20 e obteve a Certidão de Inteiro Teor da Matrícula nº 7.827 no 2º Ofício de São Francisco do Sul. Ele sabia exatamente o que estava fazendo desde abril.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#dbeafe">📋</div>
+      <div class="card-title">O Que Aconteceu — Resumo do Caso</div>
+    </div>
+    <div class="card-body">
+      <p class="text-sm" style="margin-bottom:14px">Em 20/08/2025, o Cabo da PMSC Edson Selinger atendeu, em serviço (VTR 6550), um Boletim de Ocorrência de esbulho possessório no Lote 04, Quadra 30, Balneário Atlântida, registrado por Valério Pulceno. Nessa ocasião, Edson tomou conhecimento do imóvel e dos envolvidos — usando informação obtida no exercício da função pública para benefício próprio (<strong>Advocacia Administrativa, Art. 321 CP</strong>).</p>
+      <p class="text-sm" style="margin-bottom:14px">Em <strong>13/04/2026</strong>, Edson obteve pessoalmente a certidão do imóvel no cartório competente (2º Ofício, São Francisco do Sul), confirmando a premeditação. Em <strong>20/02/2026</strong>, Ericlei Alves de Sá adquiriu os direitos de posse de Thauã Rafael Hartmann da Silva por R$50.000 via PIX, com contrato formal com firma reconhecida em Araquari/SC. O imóvel já contava com uma <strong>residência construída</strong>, onde Ericlei pretendia morar e estava realizando melhorias.</p>
+      <p class="text-sm" style="margin-bottom:14px">Em <strong>05/05/2026, entre 14h e 15h</strong>, Edson apareceu pessoalmente na <strong>gráfica de Ericlei</strong> acompanhado de um amigo (testemunha), sem farda e em veículo particular. Propôs ir ao imóvel. No local, uma viatura da PM passou e seus ocupantes disseram: <strong>"vai tocar fogo ou derrubar?"</strong> — saindo rindo. Apenas dois dias depois, em <strong>07/05/2026</strong>, o IPTU foi alterado para o nome de Edson na prefeitura. Em <strong>17/05/2026</strong>, a residência já construída foi destruída por incêndio criminoso suspeito. No dia do incêndio, a vizinha Sara gravou áudio endereçado diretamente a Edson dizendo: <em>"eu estou te avisando porque eu sei que é teu que tu tinha me dito"</em> — confirmando que Edson dizia aos vizinhos que o terreno era dele antes do fogo.</p>
+      <p class="text-sm">Desde então, Edson fez ameaças documentadas de expulsão e tomada do imóvel. Em <strong>09/06/2026</strong>, uma viatura PM com giroflex acionado foi fotografada/filmada no local, retirando-se ao ser flagrada. Ericlei mantém posse ativa com cerca instalada, documentada por fotos Timemark-verificadas. O nome de Edson <strong>não consta</strong> na Matrícula nº 7.827 do cartório competente.</p>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-header"><div class="card-icon" style="background:#dcfce7">✅</div><div class="card-title">Pontos Favoráveis</div></div>
+      <div class="card-body">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div class="alert success" style="margin:0;padding:10px 14px"><div class="alert-text" style="font-size:13px">Contrato com firma reconhecida em cartório</div></div>
+          <div class="alert success" style="margin:0;padding:10px 14px"><div class="alert-text" style="font-size:13px">R$50.000 pagos via PIX — rastreáveis</div></div>
+          <div class="alert success" style="margin:0;padding:10px 14px"><div class="alert-text" style="font-size:13px">Ata Notarial com ameaças de Edson transcritas</div></div>
+          <div class="alert success" style="margin:0;padding:10px 14px"><div class="alert-text" style="font-size:13px">Certidão da Matrícula: Edson NÃO é proprietário</div></div>
+          <div class="alert success" style="margin:0;padding:10px 14px"><div class="alert-text" style="font-size:13px">Edson admitiu ter atendido o BO original</div></div>
+          <div class="alert success" style="margin:0;padding:10px 14px"><div class="alert-text" style="font-size:13px">Fotos Timemark comprovam posse ativa</div></div>
+          <div class="alert success" style="margin:0;padding:10px 14px"><div class="alert-text" style="font-size:13px">Vídeo da viatura PM com giroflex no imóvel</div></div>
+          <div class="alert success" style="margin:0;padding:10px 14px"><div class="alert-text" style="font-size:13px">Recibo 61.296 prova premeditação desde abril</div></div>
+          <div class="alert success" style="margin:0;padding:10px 14px"><div class="alert-text" style="font-size:13px">830 mensagens exportadas e autenticadas</div></div>
+          <div class="alert success" style="margin:0;padding:10px 14px"><div class="alert-text" style="font-size:13px">Vizinha Sara confirma em áudio que Edson dizia ser dono antes do incêndio</div></div>
+          <div class="alert success" style="margin:0;padding:10px 14px"><div class="alert-text" style="font-size:13px">Amigo de Edson na visita à gráfica — testemunha presencial da abordagem</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-icon" style="background:#fee2e2">⚠️</div><div class="card-title">Pontos de Atenção</div></div>
+      <div class="card-body">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div class="alert warning" style="margin:0;padding:10px 14px"><div class="alert-text" style="font-size:13px">Contrato menciona R$70k em dinheiro não comprovado — advogado deve tratar</div></div>
+          <div class="alert warning" style="margin:0;padding:10px 14px"><div class="alert-text" style="font-size:13px">Família Hartmann não era proprietária registrada — base é posse, não propriedade</div></div>
+          <div class="alert warning" style="margin:0;padding:10px 14px"><div class="alert-text" style="font-size:13px">Valério Pulceno pode intentar reintegração de posse</div></div>
+          <div class="alert warning" style="margin:0;padding:10px 14px"><div class="alert-text" style="font-size:13px">Placa da viatura não claramente visível no vídeo</div></div>
+          <div class="alert warning" style="margin:0;padding:10px 14px"><div class="alert-text" style="font-size:13px">Áudios de ameaças ainda não formalmente transcritos com valor probatório</div></div>
+          <div class="alert danger" style="margin:0;padding:10px 14px"><div class="alert-text" style="font-size:13px"><strong>URGENTE:</strong> Registrar BO do episódio da viatura de 09/06/2026</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon" style="background:#ede9fe">🔑</div><div class="card-title">Admissões-Chave de Edson nas Mensagens</div></div>
+    <div class="card-body">
+      <div class="quote" style="background:#fee2e2;border-left-color:#b91c1c">"<strong>Vai tocar fogo ou derrubar?</strong>" <strong>— Ocupantes de viatura PM, 05/05/2026</strong> (frase proferida ao passarem pelo imóvel 12 dias antes do incêndio real, segundo relato de Ericlei)</div>
+      <div class="quote">"Eles vão dizer que é o seu Valério porém <strong>está em processo de transferência para o meu nome</strong>." <strong>— Edson, 05/05/2026</strong> (quando primeiro contato já admite que a transferência não estava concluída)</div>
+      <div class="quote">"Eu estava junto. Mas quem fez o registro não foi eu." <strong>— Edson, 22/05/2026</strong> (confirma presença no BO original de agosto/2025)</div>
+      <div class="quote">"Esse ano ainda a hora que me sobrar uma grana. <strong>Vou aterrar e cercar o lote</strong>." <strong>— Edson, 17/05/2026</strong></div>
+      <div class="quote">"Agora se alguém ir lá pra ir invadir, daí <strong>boto pra correr. Levo a documentação e quem tiver lá, vai ter que sair.</strong>" <strong>— Edson, 18/05/2026</strong></div>
+      <div class="quote">"Como te disse. <strong>Só comprei depois que vi que não tinha mais morador lá.</strong>" <strong>— Edson, 22/05/2026</strong> (sabia da ocupação anterior)</div>
+      <div class="quote">"Cartório de registro de imóveis em <strong>Araquari</strong>." <strong>— Edson, 18/05/2026</strong> (registro em cartório INCOMPETENTE — imóvel pertence ao 2º Ofício de São Francisco do Sul)</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ TIMELINE ══════ -->
+<div id="s-timeline" class="section">
+  <div class="card">
+    <div class="card-header"><div class="card-icon" style="background:#dbeafe">📅</div><div class="card-title">Linha do Tempo Completa dos Acontecimentos</div></div>
+    <div class="card-body">
+      <div class="timeline">
+
+        <div class="tl-item">
+          <div class="tl-dot blue"></div>
+          <div class="tl-date">1982 — 1990</div>
+          <div class="tl-title">Histórico do Imóvel</div>
+          <div class="tl-desc">Lote 04, Quadra 30, Balneário Atlântida registrado na Matrícula nº 7.827 (2º Ofício, São Francisco do Sul) em 1982. Em 1990, transferido para Valério Pulceno e Marieta Salete Fernandes Pulceno.</div>
+          <div class="tl-tags"><span class="tag prova">Matrícula 7.827</span></div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot blue"></div>
+          <div class="tl-date">Antes de 2025</div>
+          <div class="tl-title">Família Hartmann da Silva ocupa o imóvel</div>
+          <div class="tl-desc">A família Hartmann da Silva (Henriqueta Suzane Hartmann da Silva e outros) ocupa o lote e constrói uma residência de madeira. O imóvel estava abandonado por Valério Pulceno.</div>
+          <div class="tl-tags"><span class="tag posse">Posse</span></div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot orange"></div>
+          <div class="tl-date">20 de agosto de 2025</div>
+          <div class="tl-title">⚠ Edson conhece o imóvel em serviço — BO de Esbulho</div>
+          <div class="tl-desc">Valério Pulceno registra BO por esbulho possessório. VTR 6550 — Cb Edson Selinger e CB Ederson atendem a ocorrência. Henriqueta Suzane Hartmann da Silva estava no local. Edson utiliza informações obtidas em serviço para interesse particular — Advocacia Administrativa.</div>
+          <div class="tl-tags"><span class="tag crime">Art. 321 CP</span><span class="tag prova">BO registrado</span></div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot green"></div>
+          <div class="tl-date">20 de fevereiro de 2026</div>
+          <div class="tl-title">Ericlei adquire os direitos de posse</div>
+          <div class="tl-desc">Ericlei Alves de Sá celebra Cessão de Direitos de Posse com Thauã Rafael Hartmann da Silva. Contrato com firma reconhecida pelo Tabelionato de Araquari/SC. Pagamento de R$50.000 via PIX comprovado (3 transferências para Emanuel Marthendal Martins).</div>
+          <div class="tl-tags"><span class="tag prova">Contrato autenticado</span><span class="tag prova">PIX comprovados</span></div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot red"></div>
+          <div class="tl-date">13 de abril de 2026 — 16:52h</div>
+          <div class="tl-title">🔴 PREMEDITAÇÃO: Edson consulta o cartório competente</div>
+          <div class="tl-desc">Edson Selinger paga R$35,20 e obtém pessoalmente a Certidão de Inteiro Teor da Matrícula nº 7.827 no 2º Ofício do Registro de Imóveis de São Francisco do Sul (Recibo nº 61.296). Ele conhece a situação jurídica exata do imóvel 3 semanas antes de contatar Ericlei. Na conversa de 05/05, repassa os mesmos valores e dados bancários do cartório a Ericlei.</div>
+          <div class="tl-tags"><span class="tag crime">Premeditação</span><span class="tag prova">Recibo 61.296</span></div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot red"></div>
+          <div class="tl-date">5 de maio de 2026 — 14h às 15h</div>
+          <div class="tl-title">🔴 PRIMEIRO CONTATO PRESENCIAL — Gráfica de Ericlei</div>
+          <div class="tl-desc">Edson vai pessoalmente à gráfica de Ericlei acompanhado de um amigo (testemunha presencial). <strong>Sem farda. Veículo particular.</strong> Pergunta se Ericlei é o dono do imóvel. Ao confirmar, diz que Ericlei "caiu num golpe", que é policial e tem documentos. Ericlei pede para ver os documentos. Edson propõe ir juntos ao imóvel. <strong>Às 14:17h, ligação de 5 minutos com Sara (vizinha/testemunha do incêndio)</strong> — mesmo horário da visita de Edson.</div>
+          <div class="tl-tags"><span class="tag crime">Abordagem intimidatória</span><span class="tag warn">Testemunha presente</span></div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot red"></div>
+          <div class="tl-date">5 de maio de 2026 — ~14h30</div>
+          <div class="tl-title">🔴 AMEAÇA VELADA: "Vai tocar fogo ou derrubar?"</div>
+          <div class="tl-desc">Chegando ao imóvel com Edson e seu amigo, uma viatura da PM passa e seus ocupantes dizem: <strong>"vai tocar fogo ou derrubar?"</strong> — saem rindo. Ericlei sente-se coagido. A frase, proferida por agentes em viatura policial, precede o incêndio real em <strong>12 dias</strong>. Configura possível ameaça com uso da estrutura institucional da PM.</div>
+          <div class="tl-tags"><span class="tag crime">Art. 147 CP — Ameaça</span><span class="tag crime">Abuso de Autoridade</span><span class="tag warn">12 dias antes do incêndio</span></div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot orange"></div>
+          <div class="tl-date">5 de maio de 2026 — ~15h48</div>
+          <div class="tl-title">Edson inicia contato por WhatsApp</div>
+          <div class="tl-desc">Após o encontro presencial, Edson contata Ericlei pelo WhatsApp ("Opa. Edson aqui.") posando como "aliado". Envia foto de Ana Paula com dados aparentemente extraídos de sistema policial (fichamento). Orienta Ericlei a ir ao cartório — sabendo o que ele vai encontrar, pois já consultou o mesmo cartório em abril.</div>
+          <div class="tl-tags"><span class="tag crime">Uso indevido de sistema policial</span><span class="tag warn">2º canal — WhatsApp</span></div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot red"></div>
+          <div class="tl-date">7 de maio de 2026</div>
+          <div class="tl-title">🔴 Edson altera o IPTU — 10 dias antes do incêndio</div>
+          <div class="tl-desc">Dois dias após o primeiro contato com Ericlei, Edson altera o cadastro do IPTU na Prefeitura de Balneário Barra do Sul, inserindo-se como "Adquirente Principal" — sem qualquer registro no cartório competente. A alteração antecede o incêndio em exatamente 10 dias.</div>
+          <div class="tl-tags"><span class="tag crime">Fraude cadastral</span><span class="tag crime">Premeditação</span></div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot red"></div>
+          <div class="tl-date">17 de maio de 2026 — madrugada</div>
+          <div class="tl-title">🔥 INCÊNDIO — Residência já construída destruída</div>
+          <div class="tl-desc">Bombeiros Voluntários atendem ocorrência nº 006884. A residência — <strong>já construída, onde Ericlei estava realizando melhorias</strong> — é destruída. Às 13:48h, Ericlei encaminha a Edson áudios da vizinha Sara. No Áudio 1, Sara diz: <em>"botaram fogo ali no barraco ali não do teu terreno... O vizinho chamou o bombeiro."</em> No Áudio 2: <em>"eu estou te avisando porque eu sei que é teu que tu tinha me dito."</em> <strong>Sara confirma que Edson já havia dito a ela antes do incêndio que o terreno era dele.</strong> Ericlei registra BO na Delegacia Civil (nº 0532340/2026). Autoria do incêndio sob investigação.</div>
+          <div class="tl-tags"><span class="tag crime">Art. 250 CP — Incêndio</span><span class="tag prova">BO registrado</span><span class="tag prova">Bombeiros</span><span class="tag prova">Áudio da vizinha Sara</span></div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot orange"></div>
+          <div class="tl-date">17 a 22 de maio de 2026</div>
+          <div class="tl-title">Ameaças e admissões no WhatsApp</div>
+          <div class="tl-desc">Trocas de mensagens capturadas em Ata Notarial (Protocolo 20162450, Tabelionato Araquari, 28/05/2026). Edson ameaça retirar materiais, cercar e aterrar o lote; recusa fornecer contato da testemunha do incêndio; admite ter atendido o BO original; revela registro de "escritura" em Araquari (cartório incompetente). 830 mensagens exportadas do WhatsApp Web.</div>
+          <div class="tl-tags"><span class="tag crime">Art. 147 — Ameaça</span><span class="tag prova">Ata Notarial</span><span class="tag prova">Chat exportado</span></div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot blue"></div>
+          <div class="tl-date">28 de maio de 2026</div>
+          <div class="tl-title">Ata Notarial lavrada</div>
+          <div class="tl-desc">Tabelionato de Araquari lava Ata Notarial com transcrição integral das conversas de WhatsApp (Protocolo 20162450). Documento com fé pública.</div>
+          <div class="tl-tags"><span class="tag prova">Fé pública</span></div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot blue"></div>
+          <div class="tl-date">26 de maio de 2026</div>
+          <div class="tl-title">Edson bloqueia Ericlei no WhatsApp</div>
+          <div class="tl-desc">Após não conseguir convencer Ericlei a desistir da via judicial, Edson encerra a conversa com "Bloqueando vc". Comportamento compatível com quem reconheceu que a conversa gerou evidências contra si.</div>
+          <div class="tl-tags"><span class="tag warn">Evasão</span></div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot blue"></div>
+          <div class="tl-date">5 de junho de 2026</div>
+          <div class="tl-title">Representação ao Ministério Público</div>
+          <div class="tl-desc">Ericlei protocola representação na Secretaria das Promotoras de Justiça de Joinville — nº 05.2026.00022085, distribuída à 3ª Promotoria de Justiça. Objeto: ilegalidade policial e melhoria da eficiência.</div>
+          <div class="tl-tags"><span class="tag prova">MP Joinville</span></div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot green"></div>
+          <div class="tl-date">8 de junho de 2026 — 07:40h</div>
+          <div class="tl-title">Ericlei instala cerca no imóvel</div>
+          <div class="tl-desc">Ericlei instala mourões e arame no perímetro do imóvel, comprovando manutenção de posse. 3 fotos registradas com Timemark (GPS + timestamp verificados).</div>
+          <div class="tl-tags"><span class="tag posse">Posse ativa</span><span class="tag prova">Timemark</span></div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot red"></div>
+          <div class="tl-date">9 de junho de 2026</div>
+          <div class="tl-title">🚔 Viatura PM com giroflex no imóvel</div>
+          <div class="tl-desc">Ericlei encontra viatura da PM com giroflex acionado no seu imóvel. O veículo se retira imediatamente ao perceber a chegada de Ericlei. Fato documentado em vídeo.</div>
+          <div class="tl-tags"><span class="tag crime">Abuso de autoridade</span><span class="tag prova">Vídeo</span></div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot green"></div>
+          <div class="tl-date">10 de junho de 2026 — 07:46h</div>
+          <div class="tl-title">Registro fotográfico atual do imóvel</div>
+          <div class="tl-desc">Três fotos Timemark-verificadas registram o estado atual: edificação parcialmente queimada, cerca instalada por Ericlei. Ericlei continua na posse ativa do imóvel.</div>
+          <div class="tl-tags"><span class="tag posse">Posse ativa</span><span class="tag prova">Timemark hoje</span></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ PROVAS ══════ -->
+<div id="s-provas" class="section">
+  <div class="alert info" style="margin-bottom:24px">
+    <div class="alert-icon">📁</div>
+    <div class="alert-text"><div class="alert-title">15 documentos de prova catalogados</div>Todos os arquivos estão armazenados na pasta "Provas do Processo" com cópias de segurança.</div>
+  </div>
+  <div class="provas-grid">
+
+    <div class="prova-card"><div class="prova-ref">P-01</div><div class="prova-title">Cessão de Direitos de Posse</div><div class="prova-desc">Contrato entre Thauã Hartmann da Silva e Ericlei Alves de Sá com firma reconhecida. Tabelionato de Araquari/SC.</div><div class="prova-meta"><span class="prova-date">20/02/2026</span><span class="forca">FORTE</span></div></div>
+
+    <div class="prova-card"><div class="prova-ref">P-02 / P-03 / P-04</div><div class="prova-title">Comprovantes PIX — R$50.000</div><div class="prova-desc">3 transferências rastreáveis: R$25k (Nubank), R$4k (Inter), R$21k (Nubank) para Emanuel Marthendal Martins.</div><div class="prova-meta"><span class="prova-date">20–21/02/2026</span><span class="forca">FORTE</span></div></div>
+
+    <div class="prova-card" style="border-top:3px solid #b91c1c"><div class="prova-ref">P-05 🔴 NOVO</div><div class="prova-title">Recibo 61.296 — Edson no Cartório</div><div class="prova-desc">Recibo do 2º Ofício de São Francisco do Sul: Edson Selinger pagou R$35,20 pela certidão da Matrícula 7.827 em 13/04/2026. PROVA DE PREMEDITAÇÃO.</div><div class="prova-meta"><span class="prova-date">13/04/2026</span><span class="forca">FORTE</span></div></div>
+
+    <div class="prova-card"><div class="prova-ref">P-06</div><div class="prova-title">Certidão — Matrícula nº 7.827</div><div class="prova-desc">Edson NÃO consta como proprietário. Proprietários registrados: Valério Pulceno e Marieta Salete Fernandes Pulceno.</div><div class="prova-meta"><span class="prova-date">Emissão recente</span><span class="forca">FORTE</span></div></div>
+
+    <div class="prova-card"><div class="prova-ref">P-07</div><div class="prova-title">Ata Notarial (Protocolo 20162450)</div><div class="prova-desc">Transcrição com fé pública das conversas de WhatsApp de 17 a 22/05/2026. Ameaças e admissões de Edson documentadas.</div><div class="prova-meta"><span class="prova-date">28/05/2026</span><span class="forca">FORTE</span></div></div>
+
+    <div class="prova-card"><div class="prova-ref">P-08</div><div class="prova-title">Chat WhatsApp Exportado</div><div class="prova-desc">830 mensagens exportadas do WhatsApp Web cobrindo 9 dias de conversa (05/05 a 26/05/2026). Formato HTML autenticado.</div><div class="prova-meta"><span class="prova-date">10/06/2026</span><span class="forca">FORTE</span></div></div>
+
+    <div class="prova-card"><div class="prova-ref">P-09</div><div class="prova-title">BO nº 0532340/2026</div><div class="prova-desc">Boletim de Ocorrência registrado por Ericlei na Delegacia de Balneário Barra do Sul. Incêndio + injúria em 17/05/2026.</div><div class="prova-meta"><span class="prova-date">17/05/2026</span><span class="forca">FORTE</span></div></div>
+
+    <div class="prova-card"><div class="prova-ref">P-10</div><div class="prova-title">Declaração dos Bombeiros</div><div class="prova-desc">Ocorrência nº 006884. Confirma incêndio às 05:11h, 50% de perda, suspeita de vítima dentro, vizinhos apontam Edson como "proprietário".</div><div class="prova-meta"><span class="prova-date">17/05/2026</span><span class="forca">FORTE</span></div></div>
+
+    <div class="prova-card"><div class="prova-ref">P-11</div><div class="prova-title">BO de Esbulho — 20/08/2025</div><div class="prova-desc">Prints do BO original de Valério Pulceno. VTR 6550 — Cb Edson e CB Ederson presentes. Comprova que Edson conheceu o imóvel em serviço.</div><div class="prova-meta"><span class="prova-date">20/08/2025</span><span class="forca">FORTE</span></div></div>
+
+    <div class="prova-card"><div class="prova-ref">P-12</div><div class="prova-title">Representação ao MP</div><div class="prova-desc">MP Joinville nº 05.2026.00022085 — 3ª Promotoria de Justiça. Registra ameaças, áudios e acesso indevido ao sistema da PM.</div><div class="prova-meta"><span class="prova-date">05/06/2026</span><span class="forca">FORTE</span></div></div>
+
+    <div class="prova-card"><div class="prova-ref">P-13</div><div class="prova-title">Fotos Timemark — Posse Ativa</div><div class="prova-desc">Fotos com GPS + timestamp verificados mostrando Ericlei instalando cerca (08/06) e estado atual do imóvel (10/06). "Foto 100% Real."</div><div class="prova-meta"><span class="prova-date">08 e 10/06/2026</span><span class="forca">FORTE</span></div></div>
+
+    <div class="prova-card" style="border-top:3px solid #b91c1c"><div class="prova-ref">P-14 🔴</div><div class="prova-title">Vídeo — Viatura PM com Giroflex</div><div class="prova-desc">Viatura branca da PM com giroflex acionado no imóvel de Ericlei, se retirando ao perceber filmagem. 09/06/2026.</div><div class="prova-meta"><span class="prova-date">09/06/2026</span><span class="forca">FORTE</span></div></div>
+
+    <div class="prova-card"><div class="prova-ref">P-15</div><div class="prova-title">Áudios de Ameaças (3 arquivos)</div><div class="prova-desc">Três arquivos .ogg com mensagens de voz. Mencionados na representação ao MP. Conteúdo a ser formalmente transcrito.</div><div class="prova-meta"><span class="prova-date">09/06/2026</span><span class="forca">FORTE</span></div></div>
+
+    <div class="prova-card"><div class="prova-ref">P-16</div><div class="prova-title">81 Prints da Conversa + Áudios Transcritos</div><div class="prova-desc">Capturas de tela de toda a conversa com WhatsApp com transcrições dos áudios. Cobertura do início ao fim.</div><div class="prova-meta"><span class="prova-date">10/06/2026</span><span class="forca">FORTE</span></div></div>
+
+  </div>
+</div>
+
+<!-- ══════ CHAT ══════ -->
+<div id="s-chat" class="section">
+  <div class="alert info" style="margin-bottom:24px">
+    <div class="alert-icon">💬</div>
+    <div class="alert-text"><div class="alert-title">830 mensagens — 9 dias de conversa (05/05 a 26/05/2026)</div>Conversa completa exportada e autenticada. Ata Notarial (Protocolo 20162450) transcreveu o período 17–22/05/2026 com fé pública.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon" style="background:#dcfce7">📊</div><div class="card-title">Evolução do Tom da Conversa</div></div>
+    <div class="card-body">
+      <table>
+        <tr><th>Período</th><th>Tom</th><th>Estratégia de Edson</th></tr>
+        <tr><td>05–15/mai</td><td><span class="badge-orange">Aliado falso</span></td><td>Posar de conselheiro, falar mal da vendedora, orientar Ericlei a investigar — enquanto já havia mudado IPTU</td></tr>
+        <tr><td>17/mai</td><td><span class="badge-red">Revelação</span></td><td>Após incêndio, declara ser dono, anuncia retirada de materiais e cercamento do lote</td></tr>
+        <tr><td>18–19/mai</td><td><span class="badge-red">Pressão</span></td><td>Repete "você gastará dinheiro desnecessário" (5x), recusa dar contato de testemunha do fogo</td></tr>
+        <tr><td>21–22/mai</td><td><span class="badge-orange">Confronto + distensão</span></td><td>Ericlei cita artigos legais; Edson recua, faz papo pessoal (futebol), faz novas admissões</td></tr>
+        <tr><td>26/mai</td><td><span class="badge-red">Encerramento</span></td><td>"Bloqueando vc" — corta canal após não conseguir fazer Ericlei desistir</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="chat-section-title">Mensagens Mais Relevantes Juridicamente</div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon" style="background:#fee2e2">🔴</div><div class="card-title">Dia 5 de maio — Primeiro contato</div></div>
+    <div class="card-body">
+      <div class="chat-container">
+        <div class="chat-header"><div class="chat-avatar">E</div><div><div class="chat-name">E.S. Edson PM</div><div class="chat-sub">+55 47 99925-8545</div></div></div>
+        <div class="chat-msgs">
+          <div class="day-label"><span>terça-feira, 5 de mai. de 2026</span></div>
+          <div class="msg them"><div class="msg-sender">E.S. Edson PM</div>Opa<div class="msg-time">15:48</div></div>
+          <div class="msg them">Edson aqui<div class="msg-time">15:48</div></div>
+          <div class="msg them">Achei a estelionataria<div class="msg-time">16:24</div></div>
+          <div class="msg them">Vilson é o marido dela (cavilha)<div class="msg-time">16:26</div></div>
+          <div class="msg me">Isso mesmo<div class="msg-time">16:26</div></div>
+          <div class="msg them">Grava ela falando. Pra ver o que ela vai falar. Se conseguir gravar<div class="msg-time">16:34</div></div>
+          <div class="msg them">Eles vão dizer que é o seu Valério porém <strong>está em processo de transferência para o meu nome</strong><div class="msg-time">20:48</div></div>
+          <div class="msg them">Loteamento Balneário Atlântida Quadra 30 Lote 04<div class="msg-time">20:52</div></div>
+          <div class="msg them">custa R$ 35,20<div class="msg-time">20:52</div></div>
+          <div class="msg them">BANCO SICREDI - Agência: 2602 – Conta Corrente: 13066-1 – Titular: Andressa Lima de Castro Melo<div class="msg-time">20:52</div></div>
+        </div>
+      </div>
+      <div class="alert danger" style="margin-top:16px">
+        <div class="alert-icon">⚠️</div>
+        <div class="alert-text"><strong>NOTA JURÍDICA:</strong> Edson repassa exatamente os mesmos dados bancários e valor (R$35,20) que ele próprio usou para consultar a certidão em 13/04/2026 (Recibo 61.296). Isso confirma que a orientação era para Ericlei "descobrir" o que Edson já sabia.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon" style="background:#fee2e2">🔥</div><div class="card-title">Dia 17 de maio — Após o incêndio</div></div>
+    <div class="card-body">
+      <div class="chat-container">
+        <div class="chat-header"><div class="chat-avatar">E</div><div><div class="chat-name">E.S. Edson PM</div><div class="chat-sub">+55 47 99925-8545</div></div></div>
+        <div class="chat-msgs">
+          <div class="day-label"><span>domingo, 17 de mai. de 2026</span></div>
+          <div class="msg them"><div class="msg-sender">E.S. Edson PM</div>Nesta madrugada <strong>alguem colocou fogo no barraco</strong><div class="msg-time">10:19</div></div>
+          <div class="msg them">Daí eu fui ali ver. Botaram fogo. O bombeiro parece que foi apagar e queimou metade da casa.<div class="msg-time">13:14</div></div>
+          <div class="msg them">Depois até vou lhe arrancar umas madeiras que eu preciso<div class="msg-time">13:14</div></div>
+          <div class="msg them">Infelizmente tomou um golpe Ericley<div class="msg-time">13:16</div></div>
+          <div class="msg them">Pq o lote tem escritura. Tem IPTU. Tem dono.<div class="msg-time">13:26</div></div>
+          <div class="msg them">Esse ano ainda a hora que me sobrar uma grana. <strong>Vou aterrar e cercar o lote.</strong><div class="msg-time">13:38</div></div>
+          <div class="msg me">Vc está me ameaçando?<div class="msg-time">13:40</div></div>
+          <div class="msg them">Não to ameaçando. To te informando.<div class="msg-time">13:42</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon" style="background:#ffedd5">⚠️</div><div class="card-title">Dia 18 de maio — Admissões sobre o incêndio e testemunha</div></div>
+    <div class="card-body">
+      <div class="chat-container">
+        <div class="chat-header"><div class="chat-avatar">E</div><div><div class="chat-name">E.S. Edson PM</div><div class="chat-sub">+55 47 99925-8545</div></div></div>
+        <div class="chat-msgs">
+          <div class="day-label"><span>segunda-feira, 18 de mai. de 2026</span></div>
+          <div class="msg them"><div class="msg-sender">E.S. Edson PM</div>Recebi esses áudios dela de madrugada. Mas só vi perto das 11h da manhã.<div class="msg-time">13:48</div></div>
+          <div class="msg me">Qual o contato dela?<div class="msg-time">13:52</div></div>
+          <div class="msg them">Ela não é testemunha de nada meu jovem ela estava dormindo e acordou por vizinhos que tava pegando fogo lá<div class="msg-time">13:58</div></div>
+          <div class="msg them">Eu tenho suspeita de quem foi. O marido da corretora de imóveis que vc comprou o lote.<div class="msg-time">14:01</div></div>
+          <div class="msg them">Agora se alguem ir lá pra ir invadir, daí <strong>boto pra correr. Levo a documentação e quem tiver lá, vai ter que sair.</strong><div class="msg-time">14:21</div></div>
+          <div class="msg them">Cartório de registro de imóveis em Araquari.<div class="msg-time">14:28</div></div>
+        </div>
+      </div>
+      <div class="alert danger" style="margin-top:16px">
+        <div class="alert-icon">⚠️</div>
+        <div class="alert-text"><strong>ATENÇÃO JURÍDICA:</strong> Edson afirma ter registrado escritura em Araquari, mas o imóvel pertence à circunscrição do 2º Ofício de São Francisco do Sul. Registro em cartório incompetente é nulo (Art. 169, Lei 6.015/73). Ele mesmo consultou o cartório correto em abril (Recibo 61.296).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon" style="background:#ede9fe">🎯</div><div class="card-title">Dia 21–22 de maio — Admissões finais</div></div>
+    <div class="card-body">
+      <div class="chat-container">
+        <div class="chat-header"><div class="chat-avatar">E</div><div><div class="chat-name">E.S. Edson PM</div><div class="chat-sub">+55 47 99925-8545</div></div></div>
+        <div class="chat-msgs">
+          <div class="day-label"><span>quinta-feira, 21 de mai. de 2026</span></div>
+          <div class="msg them"><div class="msg-sender">E.S. Edson PM</div>Pq o dono sou eu meu jovem<div class="msg-time">23:21</div></div>
+          <div class="msg them">Vc sabia que o cunhado dele tem um terreno ali do lado?<div class="msg-time">23:54</div></div>
+          <div class="day-label"><span>sexta-feira, 22 de mai. de 2026</span></div>
+          <div class="msg them">Eu estava junto. Mas quem fez o registro não foi eu.<div class="msg-time">00:25</div></div>
+          <div class="msg them">Como te disse. <strong>Só comprei depois que vi que não tinha mais morador lá.</strong><div class="msg-time">00:55</div></div>
+          <div class="msg them">Mas como homem. Se esse é o meu 4º lote. Os outros 3 é tudo lá.<div class="msg-time">00:32</div></div>
+          <div class="day-label"><span>terça-feira, 26 de mai. de 2026</span></div>
+          <div class="msg them">Bloqueando vc<div class="msg-time">—</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ CRIMES ══════ -->
+<div id="s-crimes" class="section">
+  <div class="alert danger" style="margin-bottom:24px">
+    <div class="alert-icon">⚖️</div>
+    <div class="alert-text"><div class="alert-title">9 tipos penais e infrações identificados com base nos documentos</div>Todos os fatos abaixo são amparados por prova documental constante neste dossiê.</div>
+  </div>
+  <div class="crime-list">
+
+    <div class="crime-item">
+      <div class="crime-art">Art. 321 do Código Penal</div>
+      <div class="crime-name">Advocacia Administrativa</div>
+      <div class="crime-desc">Edson atendeu BO de esbulho possessório em 20/08/2025 no exercício da função de Cabo da PM (VTR 6550). Valendo-se das informações sobre o imóvel e sobre Valério Pulceno obtidas em serviço, promoveu interesse particular ao adquirir o imóvel — conflito direto entre função pública e interesse privado.</div>
+      <div class="crime-prova">Prova: BO de 20/08/2025 (VTR 6550), Recibo 61.296, admissão "eu estava junto" (Ata Notarial)</div>
+    </div>
+
+    <div class="crime-item">
+      <div class="crime-art">Art. 147 do Código Penal</div>
+      <div class="crime-name">Ameaça</div>
+      <div class="crime-desc">Edson ameaçou Ericlei de retirar materiais, cercar e aterrar o lote, e expulsar qualquer pessoa do imóvel. Frases documentadas: "boto pra correr", "quem tiver lá vai ter que sair", "vou aterrar e cercar". Padrão repetitivo de intimidação ao longo de 21 dias.</div>
+      <div class="crime-prova">Prova: Ata Notarial (P-07), chat exportado (P-08), 3 áudios .ogg (P-15)</div>
+    </div>
+
+    <div class="crime-item">
+      <div class="crime-art">Art. 250 do Código Penal</div>
+      <div class="crime-name">Incêndio Criminoso (suspeita)</div>
+      <div class="crime-desc">Incêndio de 17/05/2026 destruiu 50% da residência. Contexto: Edson havia ameaçado retirar "peças" antes do fogo; já havia alterado IPTU 10 dias antes; foi o primeiro a avisar Ericlei; vizinhos indicavam Edson como "proprietário". Declaração dos bombeiros registra suspeita de vítima dentro. Autoria a ser apurada.</div>
+      <div class="crime-prova">Prova: Declaração bombeiros (P-10), BO (P-09), Ata Notarial (P-07)</div>
+    </div>
+
+    <div class="crime-item">
+      <div class="crime-art">Lei 13.869/2019 — Art. 9º</div>
+      <div class="crime-name">Abuso de Autoridade — Uso de Viatura</div>
+      <div class="crime-desc">Em 09/06/2026, viatura oficial da PM com giroflex acionado foi encontrada no imóvel particular objeto de litígio pessoal de Edson. O uso de viatura e equipamentos do Estado para finalidades particulares caracteriza abuso de autoridade. A viatura se retira ao ser filmada.</div>
+      <div class="crime-prova">Prova: Vídeo da viatura (P-14), fotos Timemark (P-13)</div>
+    </div>
+
+    <div class="crime-item">
+      <div class="crime-art">Lei 13.869/2019 — Acesso indevido a sistema</div>
+      <div class="crime-name">Abuso de Autoridade — Acesso a Dados</div>
+      <div class="crime-desc">Conforme representação ao MP (nº 05.2026.00022085), Edson acessou o sistema da PM para obter o número de telefone de Ericlei — cidadão em litígio pessoal com o policial. Uso de sistema funcional para fins privados.</div>
+      <div class="crime-prova">Prova: Representação ao MP (P-12)</div>
+    </div>
+
+    <div class="crime-item">
+      <div class="crime-art">Art. 171 do Código Penal</div>
+      <div class="crime-name">Estelionato</div>
+      <div class="crime-desc">Edson se apresentou a Ericlei como legítimo comprador/proprietário, usando essa falsa representação para persuadi-lo a desistir de seus direitos. Não consta como proprietário na Matrícula nº 7.827. Alterou IPTU sem amparo em título registrado no cartório competente.</div>
+      <div class="crime-prova">Prova: Certidão Matrícula 7.827 (P-06), Ata Notarial (P-07)</div>
+    </div>
+
+    <div class="crime-item">
+      <div class="crime-art">Art. 163 do Código Penal</div>
+      <div class="crime-name">Dano (potencial)</div>
+      <div class="crime-desc">Se comprovada autoria no incêndio, configura crime de dano à edificação. Ericlei havia realizado melhorias no imóvel antes do incêndio (documentadas no contrato e nos pagamentos).</div>
+      <div class="crime-prova">Prova: Declaração bombeiros, BO, fotos antes do incêndio</div>
+    </div>
+
+    <div class="crime-item">
+      <div class="crime-art">Responsabilidade Civil — Art. 37, §6º CF</div>
+      <div class="crime-name">Responsabilidade do Estado de Santa Catarina</div>
+      <div class="crime-desc">O Estado de SC responde objetivamente pelos danos causados por seus agentes no exercício das funções. Edson utilizou função pública (atendimento de BO), sistemas da PM e viatura oficial para promover interesses privados. O Estado é solidariamente responsável.</div>
+      <div class="crime-prova">Fundamento: Art. 37, §6º CF; jurisprudência STF sobre responsabilidade objetiva do Estado</div>
+    </div>
+
+    <div class="crime-item" style="border-left-color:#7c3aed">
+      <div class="crime-art" style="color:#7c3aed">Nulidade Civil</div>
+      <div class="crime-name">Registro em Cartório Incompetente</div>
+      <div class="crime-desc">Edson afirma ter registrado escritura em Araquari, mas o imóvel (Balneário Barra do Sul) pertence à circunscrição do 2º Ofício de São Francisco do Sul. Registro em cartório incompetente é nulo de pleno direito (Art. 169, Lei 6.015/73). O próprio Edson consultou o cartório correto em abril (Recibo 61.296), demonstrando que sabia qual era o competente.</div>
+      <div class="crime-prova">Prova: Recibo 61.296 (P-05), Certidão Matrícula (P-06), admissão de Edson no chat</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ PARTES ══════ -->
+<div id="s-partes" class="section">
+  <div class="partes-grid">
+
+    <div class="parte-card">
+      <div class="parte-avatar" style="background:#dbeafe">👤</div>
+      <div class="parte-nome">Ericlei Alves de Sá</div>
+      <span class="parte-role req">Requerente / Cessionário</span>
+      <div class="parte-info">
+        CPF: 058.209.085-70<br>
+        Rua Ver. Francisco Marcelino Vieira, 277, Navegantes/SC<br>
+        Adquiriu direitos de posse em 20/02/2026<br>
+        Pagou R$50.000 via PIX (comprovados)<br>
+        Mantém posse ativa com cerca instalada
+      </div>
+    </div>
+
+    <div class="parte-card adversario">
+      <div class="parte-avatar" style="background:#fee2e2">⚠️</div>
+      <div class="parte-nome">Edson Selinger</div>
+      <span class="parte-role adv">Adversário / PM</span>
+      <div class="parte-info">
+        Cabo da Polícia Militar de SC<br>
+        Tel: (47) 99925-8545<br>
+        <strong>NÃO consta</strong> na Matrícula nº 7.827<br>
+        Alterou IPTU em 07/05/2026 sem registro<br>
+        Consultou cartório em 13/04/2026 (Recibo 61.296)<br>
+        Afirma ter registrado escritura em Araquari (cartório incompetente)
+      </div>
+    </div>
+
+    <div class="parte-card neutro">
+      <div class="parte-avatar" style="background:#fef9c3">📄</div>
+      <div class="parte-nome">Valério Pulceno</div>
+      <span class="parte-role ned">Proprietário Registrado</span>
+      <div class="parte-info">
+        CPF: 182.430.299/15<br>
+        Cônjuge: Marieta Salete Fernandes Pulceno<br>
+        Proprietário formal — Matrícula nº 7.827<br>
+        Registrou BO de esbulho em 20/08/2025<br>
+        Cunhado tem terreno vizinho (ligação com Edson)
+      </div>
+    </div>
+
+    <div class="parte-card">
+      <div class="parte-avatar" style="background:#dcfce7">✍️</div>
+      <div class="parte-nome">Thauã R. Hartmann da Silva</div>
+      <span class="parte-role req">Cedente</span>
+      <div class="parte-info">
+        CPF: 095.929.529-14<br>
+        Natural de Novo Hamburgo/RS<br>
+        Família ocupava o imóvel antes de 2025<br>
+        Assinou contrato de cessão com firma reconhecida<br>
+        Testemunha fundamental para a posse
+      </div>
+    </div>
+
+    <div class="parte-card">
+      <div class="parte-avatar" style="background:#f3e8ff">👥</div>
+      <div class="parte-nome">Ana Paula Marthendal</div>
+      <span class="parte-role req">Testemunha / Contrato</span>
+      <div class="parte-info">
+        CPF: 082.847.229.940<br>
+        Testemunha signatária do contrato de cessão<br>
+        Pode confirmar a negociação e o pagamento<br>
+        Familiar de Emanuel Marthendal Martins (recebeu os PIX)
+      </div>
+    </div>
+
+    <div class="parte-card">
+      <div class="parte-avatar" style="background:#f0fdf4">🚒</div>
+      <div class="parte-nome">Bombeiros Voluntários BBS</div>
+      <span class="parte-role ned">Testemunha Institucional</span>
+      <div class="parte-info">
+        Cmd. Marcos Antonio de Oliveira<br>
+        Atendimento nº 006884 — 17/05/2026 05:11h<br>
+        Registrou suspeita de vítima dentro<br>
+        Vizinhos indicaram Edson como "proprietário"<br>
+        Declaração assinada em 20/05/2026
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ JURÍDICO ══════ -->
+<div id="s-juridico" class="section">
+
+  <div class="alert danger">
+    <div class="alert-icon">🏛️</div>
+    <div class="alert-text"><div class="alert-title">SEÇÃO TÉCNICA — USO EXCLUSIVO DO PATRONO JURÍDICO</div>Esta seção contém fundamentação legal, estratégia processual e recomendações para o advogado.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon" style="background:#dbeafe">⚡</div><div class="card-title">Providências Urgentes</div></div>
+    <div class="card-body">
+      <table>
+        <tr><th>Prazo</th><th>Providência</th><th>Fundamento</th></tr>
+        <tr><td><span class="badge-red">HOJE</span></td><td>Registrar BO da viatura PM de 09/06/2026 na Delegacia Civil</td><td>Abuso de autoridade, Lei 13.869/2019</td></tr>
+        <tr><td><span class="badge-red">HOJE</span></td><td>Protocolar petição de tutela de urgência — liminar de manutenção de posse</td><td>Art. 300 CPC — esbulho em curso</td></tr>
+        <tr><td><span class="badge-orange">URGENTE</span></td><td>Requerer ofício à PM para identificar viatura e militar escalado em 09/06/2026</td><td>Instrução processual</td></tr>
+        <tr><td><span class="badge-orange">URGENTE</span></td><td>Requerer indisponibilidade da Matrícula nº 7.827</td><td>Tutela cautelar</td></tr>
+        <tr><td><span class="badge-orange">URGENTE</span></td><td>Ampliar representação ao MP com fatos de junho/2026</td><td>MP Joinville nº 05.2026.00022085</td></tr>
+        <tr><td><span class="badge-blue">BREVE</span></td><td>Protocolar requerimento na Prefeitura para cancelar alteração do IPTU</td><td>Ato administrativo nulo sem título</td></tr>
+        <tr><td><span class="badge-blue">BREVE</span></td><td>Verificar escritura Edson em Araquari — cartório incompetente</td><td>Art. 169, Lei 6.015/73</td></tr>
+        <tr><td><span class="badge-blue">BREVE</span></td><td>Ouvir CB Ederson (VTR 6550) e vizinhos identificados pelos bombeiros</td><td>Rol de testemunhas</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon" style="background:#dcfce7">📜</div><div class="card-title">Estratégia Processual Recomendada</div></div>
+    <div class="card-body">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div>
+          <div style="font-weight:700;color:#111827;margin-bottom:6px">1. Ação de Manutenção/Reintegração de Posse com Tutela de Urgência</div>
+          <p class="text-sm">Réus: Edson Selinger (e eventualmente Valério Pulceno). Pedido liminar com base nos Arts. 560 e 562 CPC. Provas da posse: contrato com firma reconhecida, PIX comprovados, fotos Timemark, cerca instalada. A presença da viatura PM em 09/06/2026 demonstra risco concreto e iminente de esbulho.</p>
+        </div>
+        <hr>
+        <div>
+          <div style="font-weight:700;color:#111827;margin-bottom:6px">2. Ação Penal — Representação Criminal Ampliada</div>
+          <p class="text-sm">Crimes: Art. 147 (ameaça), Art. 250 (incêndio — a apurar), Art. 321 (advocacia administrativa), Art. 171 (estelionato), Lei 13.869/2019 (abuso de autoridade). Apresentar ao MP de Joinville para ampliar o protocolo já existente (nº 05.2026.00022085) com os fatos de junho/2026.</p>
+        </div>
+        <hr>
+        <div>
+          <div style="font-weight:700;color:#111827;margin-bottom:6px">3. Ação de Responsabilidade Civil contra o Estado de SC</div>
+          <p class="text-sm">Fundamento: Art. 37, §6º CF (responsabilidade objetiva). O Estado responde pelos danos causados por Edson ao utilizar: (a) informações obtidas em serviço policial para proveito próprio; (b) sistema de dados da PM para localizar o número de Ericlei; (c) viatura oficial para vigiar imóvel em litígio particular. Danos morais e materiais.</p>
+        </div>
+        <hr>
+        <div>
+          <div style="font-weight:700;color:#111827;margin-bottom:6px">4. Argumento Central — Cartório Incompetente</div>
+          <p class="text-sm">Edson alega ter registrado escritura em Araquari. Porém: (a) Balneário Barra do Sul pertence à circunscrição do 2º Ofício de São Francisco do Sul; (b) o próprio Edson consultou o cartório correto em 13/04/2026 (Recibo 61.296), confirmando que sabia qual era o competente; (c) o registro em cartório incompetente é nulo (Art. 169, Lei 6.015/73). Isso destrói a alegação de propriedade de Edson.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon" style="background:#fef9c3">🔍</div><div class="card-title">Lacunas Probatórias — Investigação Pendente</div></div>
+    <div class="card-body">
+      <table>
+        <tr><th>Item</th><th>Relevância</th><th>Como Obter</th></tr>
+        <tr><td>Transcrição formal dos 3 áudios .ogg</td><td>Alta — ameaças gravadas</td><td>Laudo pericial ou ata notarial</td></tr>
+        <tr><td>Contrato Edson-Valério Pulceno</td><td>Alta — verificar data e cartório</td><td>Intimação judicial de Valério</td></tr>
+        <tr><td>Identidade da testemunha do incêndio</td><td>Alta — vizinha que acordou e avisou Edson</td><td>Diligência no local ou ofício bombeiros</td></tr>
+        <tr><td>Histórico IPTU — alterações cadastrais</td><td>Alta — confirmar data exata da mudança</td><td>Requerimento à Prefeitura de BBS</td></tr>
+        <tr><td>Placa da viatura PM de 09/06/2026</td><td>Média — identificar o militar</td><td>Ofício à PM-SC via juízo</td></tr>
+        <tr><td>Escalas da PM — 09/06 e 20/08/2025</td><td>Alta — confirmar Edson em ambas</td><td>Ofício à Corregedoria PMSC</td></tr>
+        <tr><td>"Vilson de Barra Velha" — marido de Henriqueta</td><td>Média — cadeia possessória completa</td><td>Investigação das partes</td></tr>
+        <tr><td>Certidão negativa atualizada — Matrícula 7.827</td><td>Alta — verificar se Edson registrou algo</td><td>Cartório 2º Ofício São Francisco do Sul</td></tr>
+      </table>
+    </div>
+  </div>
+
+</div>
+</div><!-- /container -->
+
+<div class="footer">
+  Dossiê Jurídico — Ericlei Alves de Sá | Elaborado em 10 de junho de 2026 | Confidencial — Uso Jurídico Exclusivo
+</div>
+
+</div><!-- /main -->
+
+<script>
+// ── SENHA ──────────────────────────────────────────────────────────────────
+const SENHA = "Ericlei2026";
+
+document.getElementById('senha-input').addEventListener('keydown', function(e){
+  if(e.key === 'Enter') verificarSenha();
+});
+
+function verificarSenha(){
+  const v = document.getElementById('senha-input').value;
+  if(v === SENHA){
+    document.getElementById('lock-screen').style.display = 'none';
+    document.getElementById('main').style.display = 'block';
+  } else {
+    document.getElementById('lock-error').style.display = 'block';
+    document.getElementById('senha-input').value = '';
+    document.getElementById('senha-input').focus();
+  }
+}
+
+// ── NAVEGAÇÃO ──────────────────────────────────────────────────────────────
+function showSection(id, btn){
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('s-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+</script>
+</body>
+</html>
